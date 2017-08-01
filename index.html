@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>lanterna</title>
+	<style>
+		html, body{
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+		img{
+			width: 100%;
+			filter: grayscale(100%);
+		}
+		div{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 250px;
+			height: 250px;
+			transform: translate(-50%, -50%);
+			border-radius: 50%;
+			background-image: url(wallpaper.jpg);
+			background-size: 1360px auto;
+		}
+	</style>
+</head>
+<body>
+	<img src="wallpaper.jpg" alt="psycodelic">
+	<div></div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function() {
+		var largura = window.screen.availWidth; 
+		var altura = window.screen.availHeight;
+
+		var div = $('div');
+		var larguraDiv = div.width();
+		var alturaDiv = div.height();
+		var larguraDiv = larguraDiv/2;
+		var alturaDiv = alturaDiv/2;
+		
+		var dividerX = larguraDiv/largura;
+		var dividerY = alturaDiv/altura;
+
+		$("html").mousemove(function(e){
+			var posX = e.pageX;
+			var posY = e.pageY;
+			var relativeX = largura*dividerX - posX;
+			var relativeY = altura*dividerY - posY;
+			div.css({
+				top: posY,
+				left: posX,
+			});
+			div.css('background-position', relativeX+'px '+relativeY+'px');
+		});
+	});
+</script>
+</html>
