@@ -2,8 +2,9 @@
 <html>
 <head>
 	<title>lanterna</title>
+
 	<style>
-		html, body{
+		html, body, body > *{
 			height: 100%;
 			margin: 0;
 			padding: 0;
@@ -14,6 +15,7 @@
 			filter: grayscale(100%);
 		}
 		div{
+			opacity: 0;
 			position: absolute;
 			top: 50%;
 			left: 50%;
@@ -22,40 +24,155 @@
 			transform: translate(-50%, -50%);
 			border-radius: 50%;
 			background-image: url(wallpaper.jpg);
-			background-size: 1360px auto;
+		}
+
+		form{
+			text-align: center;
+			position: absolute;
+			right: 0;
+			top: 0;
+			margin: 20px;
+			width: 20%;
+			height: 300px;
+			background-color: transparent;
+			box-shadow: 0 0 1px #000000;
+			opacity: 0;
+			transition: .3s linear;
+			-o-transition: .3s linear;
+			-moz-transition: .3s linear;
+			-webkit-transition: .3s linear;
+		}
+
+		form.open{
+			opacity: 1;
+			box-shadow: 0 0 8px #000000;
+		}
+
+		form input::placeholder{
+			text-transform: uppercase;
+			color: #fff;
+		}
+
+		form input{
+			background-color: rgba(255, 255, 255, 0.35);
+			outline: 0;
+		    border: none;
+		    width: 85%;
+		    height: 60px;
+		    margin: 10% auto;
+		    padding: 8px;
+		    font-size: 50px;
+		    border-radius: 8px;
+		    box-shadow: 0 0 0px #000000;
+			transition: .1s linear;
+			-o-transition: .1s linear;
+			-moz-transition: .1s linear;
+			-webkit-transition: .1s linear;
+		}
+
+		form input:focus{
+			background-color: rgba(255, 255, 255, 0.70);
+			box-shadow: 0 0 8px #000000;
+		}
+
+		header{
+			background-color: #fff;
+		}
+
+		header h2{
+			text-align: center;
+			font-size: 100px;
+			position: absolute;
+			top: 20%;
+			left: 50%;
+			transform: translateX(-50%);
 		}
 	</style>
 </head>
 <body>
-	<img src="wallpaper.jpg" alt="psycodelic">
-	<div></div>
+	<header id="loading">
+		<h2>Click duplo para alterar tamanho do foco.</h2>
+	</header>
+	<section id="pagehome">
+		<!--start joke-->
+		<audio id="som" src="floresta.mp3"></audio>
+	
+		<img src="wallpaper.jpg" alt="psycodelic">
+		<div id="div"></div>
+		<form>
+			<input type="text" id="largura" placeholder="largura">
+			<input type="text" id="altura" placeholder="altura">
+		</form>
+	</section>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
-	$(document).ready(function() {
-		var largura = window.screen.availWidth; 
-		var altura = window.screen.availHeight;
+window.onload = function() {
+	//loading
+   	var load = function(){
+    	document.getElementById('div').style.opacity = 1;
+	    document.getElementById('loading').style.display = 'none';
+	    document.getElementById('pagehome').style.visibility = 'initial';
+	    var som = document.getElementById('som');
+		som.play();
+   	}
+
+   	setTimeout(load, 2500);
 
 		var div = $('div');
-		var larguraDiv = div.width();
-		var alturaDiv = div.height();
-		var larguraDiv = larguraDiv/2;
-		var alturaDiv = alturaDiv/2;
-		
-		var dividerX = larguraDiv/largura;
-		var dividerY = alturaDiv/altura;
 
+		//dados da tela
+		var largura = window.screen.availWidth;
+		var altura = window.screen.availHeight;
+		
+		//responsividade do fundo da <div>
+		div.css('background-size', largura+'px');
+
+
+		//monitoramento do movimento do cursor
 		$("html").mousemove(function(e){
+			//dados da div
+			var centroDivX = div.width()/2;
+			var centroDivY = div.height()/2;
+			
+			//controle do background-position da <div>
+			var dividerX = centroDivX/largura;
+			var dividerY = centroDivY/altura;
+
+			//dados do cursor
 			var posX = e.pageX;
 			var posY = e.pageY;
-			var relativeX = largura*dividerX - posX;
-			var relativeY = altura*dividerY - posY;
+
+			//controle do movimento da <div>
 			div.css({
 				top: posY,
 				left: posX,
 			});
+
+			//adequando background-position a <img>
+			var relativeX = largura*dividerX - posX;
+			var relativeY = altura*dividerY - posY;
 			div.css('background-position', relativeX+'px '+relativeY+'px');
 		});
-	});
+
+		//monitoramento do click duplo
+		$(window).dblclick(function(){
+			//abre fecha form
+			$('form').toggleClass('open');
+		});
+
+		//altera dimensões da <div>
+		document.addEventListener('keypress', function(e){
+		  if(e.which == 13){
+		    var divX = $('#largura').val();
+		    var divY = $('#altura').val();
+		    $('div').css({
+				width: divX,
+				height: divY,
+			});
+			$('form').toggleClass('open');
+		  }
+		}, false);
+};
 </script>
 </html>
